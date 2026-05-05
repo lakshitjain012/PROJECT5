@@ -1,0 +1,131 @@
+#include <iostream>
+#include <string>
+#include<vector>
+using namespace std;
+class BankAccount {
+    private:
+     int accountNo; 
+     string holderName;
+     double balance;    
+     static constexpr double MIN_BALANCE=100;
+     vector<string> transactions;
+
+     public:
+     BankAccount(int accNo,string name,double bal){
+        accountNo=accNo;
+        holderName=name;
+        balance=(bal>=MIN_BALANCE)?bal:MIN_BALANCE;
+     }
+
+        int getAccountNo() const {
+    return accountNo;
+}
+
+    double getBalance() const{
+    return balance;
+   }
+
+
+       bool deposit(double amount) {
+        if (amount <= 0) {
+            return false;
+        }
+        balance += amount;
+       transactions.push_back("Deposited: " + to_string(amount));
+        return true;
+    }
+     
+    
+    bool withdraw(double amount){
+        if(amount<=0){
+            
+            return false;
+        }
+        if(amount>balance){
+            
+            return false;
+        }
+   if(balance-amount<MIN_BALANCE){
+           
+            return false;
+   }
+            balance-=amount;
+            transactions.push_back("Withdrawn: " + to_string(amount));
+            return true;
+   } 
+
+   void displayBalance() const{
+    cout<<"Account No: "<< accountNo <<endl;
+    cout<<"Name: "<< holderName << endl;
+    cout<<"Balance: Rs "<< balance <<endl;
+   }
+
+   void showTransactions() const{
+    cout<<"Transaction History:\n";
+    for (const auto &t:transactions){
+        cout<<"- "<< t <<endl;
+    }
+   }
+};
+
+
+int main(){
+   vector<BankAccount>accounts;
+   int accNo;
+   string name;
+   double balance;
+   for(int i=0;i<2;i++){
+   cout << "\nEnter details for Account " << i + 1 << ":\n";
+    cout<<"Account Number: ";
+    cin>>accNo;
+
+    cout<<"Name:";
+    cin>>name;
+
+    cout<<"Intial Balance";
+    cin>>balance;
+    accounts.push_back(BankAccount(accNo,name,balance));
+   }
+   cout << "\nAvailable Accounts:\n";
+for (int i = 0; i < accounts.size(); i++) {
+    cout << "Account No: " << accounts[i].getAccountNo() << endl;
+}
+   int choice,accIndex;
+   double amount;
+   cout<<"\nChoose operations:\n";
+   cout<<" 1.Depoist\n2. Withdraw\n";
+   cin>>choice;
+   cout << "Enter Account Number: ";
+   cin>>accIndex;
+   accIndex--;
+   if (accIndex < 0 || accIndex >= accounts.size()) {
+    cout << "Invalid account selection\n";
+    return 0;
+}
+
+   cout<<"Enter amount";
+   cin>>amount;
+   if(choice==1){
+    if(accounts[accIndex].deposit(amount)){
+        cout<<"Deposit successful\n";
+    }else{
+        cout<<"Deposit Failed\n";
+    }
+   }
+   else if(choice==2){
+    if(accounts[accIndex].withdraw(amount)){
+        cout<<"Withdrawal complete\n";
+    }
+    else{
+        cout<<"Withdrawal failed\n";
+    }
+   }
+   else{
+    cout<<"Invalid choice\n";
+   }
+  cout << "\n--- Account Details ---\n";
+   accounts[accIndex].displayBalance();
+   accounts[accIndex].showTransactions();
+
+   return 0;
+}
